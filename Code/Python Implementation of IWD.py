@@ -1,10 +1,10 @@
 <<<<<<< Updated upstream
-#------------IMPLEMENTATION OF TSP-INTELLIGENT WATER DROP ALGORITHM---------------------#
+#------------IMPLEMENTATION OF INTELLIGENT WATER DROP ALGORITHM---------------------#
 
 nc= #integer i.e. number of cities
 c= #list of the Cartesian coordinates (x,y) of cities
 
-def tspIWD(c,nc):
+def IWD(c,nc):
     Niwd=nc
     av=1000
     bv=0.01
@@ -24,7 +24,7 @@ def tspIWD(c,nc):
     
     
 =======
-#------------IMPLEMENTATION OF TSP-INTELLIGENT WATER DROP ALGORITHM---------------------#
+#------------IMPLEMENTATION OF INTELLIGENT WATER DROP ALGORITHM---------------------#
 
 nc= #integer i.e. number of cities
 c= #list of the Cartesian coordinates (x,y) of cities
