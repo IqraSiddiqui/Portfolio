@@ -5,6 +5,7 @@
 N= #set of nodes from user
 E= #set of edges from user
 
+import random
 #----------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------
 #helper functions:
@@ -39,19 +40,57 @@ def adjlist(V,E):
 #---------------------------------------------------------------------------------        
 #---------------------------------------------------------------------------------
 
+def initializeIWD(Niwd):
+    iwd={} #it will hold key as the iwd and its value as a list in the form [soil,velocity,visited]
+    for i in range(Niwd):
+            
+            val=[]
+            val.append(0)
+            val.append(iniVel)
 
-def soil(i,j):
-    pass
+            visited=[]
+            visit=random.choice(graph.keys()) #Step 3
+            visited.append(visit) #Step 4
+            val.append(visited)
+
+            iwd[i]=val
+    return(iwd)
     
+
+def probabilityJ(i,j,temp[i],soil):
+    sigma_i_k=0
+    for k in graph:
+        if k not in temp[i]:
+            sigma_i_k = sigma_i_k + f_soil(i,k,temp[i],soil)
+    return(f_soil(i,j,temp[i],soil)/sigma_i_k)
+            
+            
+def g_soil(i,j,temp[i],soil):
+    mini=1000000000000000000000000000000
+    for l in graph:
+        if l not in temp[i]:
+            if soil[i][l]<mini:
+                mini=soil[i][l]
+    if mini>=0:
+        return(soil[i][l])
+    else:
+        return(soil[i][l]-mini)
     
+def f_soil(i,j,temp[i],soil):
+    epsilon_s= 0.0001
+    return(1/(epsilon_s+g_soil(i,j,temp[i],soil)))
 
+def HUD(graph):
+    return
 
+#----------------------------------------------------------------------------------------------------    
+    
 
 
 graph=adjlist(N,E) 
 def IWD(graph):
-    temp={} #a temperoray dictionary having key as iwd and value as the visited node list of each iwd
-    
+    soil={} #soil on path from some node to another
+
     #Step 1
     Ttb= -1000000000000000000000000000000
     Niwd=len(graph)
@@ -69,35 +108,16 @@ def IWD(graph):
     
     iniSoil=10000
     iniVel=200
-    
-    for i in range(len(graph)):
-        #Step 2
-        visited=[] 
-        Soil=0
-        Vel=iniVel
-        #Step 3
-        lst=list(graph.keys())
-        #Step 4
-        visited.append(lst[i])
-        temp[i]=visited
 
-    #Step 5.1
-
+    itercount=0
+    itermax=1000
     
-    
-        
+   for iwd in range(len(graph)):
+        soil[iwd]={}
+        for j in graph[iwd]:
+            soil[iwd][j]=iniSoil
 
-    
-
-    
-        
-
-        
- 
-        
-        
+    while itercount<itermax:
+        iwd=initializeIWD(Niwd) #Step 2
+        for i in range(Niwd):
             
-        
-        
-        
-        
