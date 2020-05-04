@@ -65,17 +65,6 @@ def probabilityJ(i,j,temp[i],soil):
     return(f_soil(i,j,temp[i],soil)/sigma_i_k)
             
             
-"""
-def probability_of_choosing_j(visited, current, j, graph, soil):
-    	"""probability of choosing node j"""
-	sum_fsoil_i_k = 0
-	for k in graph:
-		if k not in visited:
-			sum_fsoil_i_k += f_soil(visited, current, k, graph, soil)
-	return f_soil(visited,current,j,graph, soil)/sum_fsoil_i_k
-"""
-# shouldn't there be a graph passed to this probablity function?
-
 def g_soil(i,j,temp[i],soil):
     mini=1000000000000000000000000000000
     for l in graph:
@@ -91,12 +80,14 @@ def f_soil(i,j,temp[i],soil):
     epsilon_s= 0.0001
     return(1/(epsilon_s+g_soil(i,j,temp[i],soil)))
 
-def time(i,j,vel,HUD):
-    	return HUD[i][j]/vel 
-
 def HUD(distance):
     HUD = distance
     return distance   #not storing it yet...
+
+def time(i,j,vel,HUD):
+    	return HUD[i][j]/vel 
+
+
 
 
 
@@ -168,38 +159,53 @@ def IWD(graph):
         quality = []
         probability = {}
         for i in range(Niwd):
-            while len(iwd[i].visited < Niwd):
+	    target=iwd[i]
+            while len(target[2]) < Niwd:
                 node_selected = False   
                 # 5.1 
+		
                 for j in graph[iwd[i].current]:
-    					if j not in iwd[i].visited:
-						    probability[j] = probabilityJ(iwd[i].visited, iwd[i].current, j, soil) #one extra parameter going which is not passed in the function (graph)
+    				if j not in target[2]:
+					probability[j] = probabilityJ(target[2], iwd[i].current, j, soil) #one extra parameter going which is not passed in the function (graph)
                             # add newly visited node j to visited
-                            iwd[i].visited.append(j)
+                            target[2].append(j)
+			    for ind in iwd[i]:
+				if ind is list:
+					ind=target[2]
+					
+				
                             node_selected = True
-                """probability_sum = 0
-                #if probability_of_choosing_j(iwd[i].visited,iwd[i].current,j) >= random.random():
-				#append the node to the visited set
-				random_number = random.random()
-                for k in probability:
-    					if probability_sum > 1:
+                random_number=random.random()
+                probability_sum
+		for k in probability:
+    			if probability_sum > 1:
                             node_selected = False
                             break
-					if random_number > probability_sum and random_number < probability_sum+probability[k]: 
+			if random_number > probability_sum and random_number < probability_sum+probability[k]: 
                             j = k
                             node_selected = True
                             break
-					probability_sum += probability[k] 
-                    """
+			probability_sum = probability_sum + probability[k] 
+                    
                 if node_selected == True:
                     # 5.2
-                    u_v = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][i] ** 2)   #u_v = updated velocity 
-                    iwd[i].velocity = u_v
-                    # 5.3 
-                    ds = asoil/(boil + c_soil * time(i,j,u_v,HUD) ** 2)         #ds = delta soil 
-                    # 5.4
-                    soil[iwd[i].current][i] = (1 - pn) * soil[iwd[i].current][i] - pn * ds
-                    iwd[i].val = iwd[i].val + ds            #val is the amount of soil
+		    temp=iwd[i]
+		    for ind in range(len(iwd[i])):
+				if ind==2:
+					temp[2]=target[2]
+				elif ind==1:
+					 u_v = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][i] ** 2)   #u_v = updated velocity 
+                    			 temp[1]=u_v
+				else:
+					 # 5.3 
+                    			ds = asoil/(boil + c_soil * time(i,j,u_v,HUD) ** 2)         #ds = delta soil 
+                   			 # 5.4
+                    			soil[iwd[i].current][i] = (1 - pn) * soil[iwd[i].current][i] - pn * ds
+                    			temp[0] =  temp[0] + ds            
+		    iwd[i]=temp
+					
+                   
+                   
 
 
 
