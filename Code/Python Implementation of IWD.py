@@ -65,6 +65,17 @@ def probabilityJ(i,j,temp[i],soil):
     return(f_soil(i,j,temp[i],soil)/sigma_i_k)
             
             
+"""
+def probability_of_choosing_j(visited, current, j, graph, soil):
+    	"""probability of choosing node j"""
+	sum_fsoil_i_k = 0
+	for k in graph:
+		if k not in visited:
+			sum_fsoil_i_k += f_soil(visited, current, k, graph, soil)
+	return f_soil(visited,current,j,graph, soil)/sum_fsoil_i_k
+"""
+# shouldn't there be a graph passed to this probablity function?
+
 def g_soil(i,j,temp[i],soil):
     mini=1000000000000000000000000000000
     for l in graph:
@@ -80,8 +91,13 @@ def f_soil(i,j,temp[i],soil):
     epsilon_s= 0.0001
     return(1/(epsilon_s+g_soil(i,j,temp[i],soil)))
 
+def time(i,j,vel,HUD):
+    	return HUD[i][j]/vel 
+
 def HUD(graph):
     return
+
+
 
 #----------------------------------------------------------------------------------------------------    
     
@@ -146,5 +162,38 @@ def IWD(graph):
         V IWD c ( ) = { } . Each IWD’s velocity is set to InitVel.
         All IWDs are set to have zero amount of soil."""
         iwd=initializeIWD(Niwd) #Step 2
+        quality = []
+        probability = {}
         for i in range(Niwd):
-            
+            while len(iwd[i].visited < Niwd):
+                node_selected = False   #dk why I put it here atm 
+                # 5.1 
+                for j in graph[iwd[i].current]:
+    					if j not in iwd[i].visited:
+						    probability[j] = probabilityJ(iwd[i].visited, iwd[i].current, j, soil) #one extra parameter going which is not passed in the function (graph)
+                            # add newly visited node j to visited
+                            iwd[i].visited.append(j)
+                            node_selected = True
+                """probability_sum = 0
+                #if probability_of_choosing_j(iwd[i].visited,iwd[i].current,j) >= random.random():
+				#append the node to the visited set
+				random_number = random.random()
+                for k in probability:
+    					if probability_sum > 1:
+                            node_selected = False
+                            break
+					if random_number > probability_sum and random_number < probability_sum+probability[k]: 
+                            j = k
+                            node_selected = True
+                            break
+					probability_sum += probability[k] 
+                    """
+                if node_selected == True:
+                    # 5.2
+                    updated_velocity = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][j] ** 2)
+                    iwd[i].velocity = updated_velocity
+                    # 5.3 incomplete 
+                    delta_soil = asoil/(boil + c_soil * time(i,j,updated_velocity,HUD) ** 2)
+
+
+          
