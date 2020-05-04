@@ -94,8 +94,9 @@ def f_soil(i,j,temp[i],soil):
 def time(i,j,vel,HUD):
     	return HUD[i][j]/vel 
 
-def HUD(graph):
-    return
+def HUD(distance):
+    HUD = distance
+    return distance   #not storing it yet...
 
 
 
@@ -150,6 +151,8 @@ def IWD(graph):
 
     itercount=0             #iteration count is set to zero
     itermax=1000
+
+    amount_of_soil
     
    for iwd in range(len(graph)):
         soil[iwd]={}
@@ -166,7 +169,7 @@ def IWD(graph):
         probability = {}
         for i in range(Niwd):
             while len(iwd[i].visited < Niwd):
-                node_selected = False   #dk why I put it here atm 
+                node_selected = False   
                 # 5.1 
                 for j in graph[iwd[i].current]:
     					if j not in iwd[i].visited:
@@ -190,10 +193,14 @@ def IWD(graph):
                     """
                 if node_selected == True:
                     # 5.2
-                    updated_velocity = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][j] ** 2)
-                    iwd[i].velocity = updated_velocity
-                    # 5.3 incomplete 
-                    delta_soil = asoil/(boil + c_soil * time(i,j,updated_velocity,HUD) ** 2)
+                    u_v = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][i] ** 2)   #u_v = updated velocity 
+                    iwd[i].velocity = u_v
+                    # 5.3 
+                    ds = asoil/(boil + c_soil * time(i,j,u_v,HUD) ** 2)         #ds = delta soil 
+                    # 5.4
+                    soil[iwd[i].current][i] = (1 - pn) * soil[iwd[i].current][i] - pn * ds
+                    iwd[i].val = iwd[i].val + ds            #val is the amount of soil
+
 
 
           
