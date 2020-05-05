@@ -166,15 +166,13 @@ def IWD(graph):
 		
                 for j in graph[iwd[i].current]:
     				if j not in target[2]:
-					probability[j] = probabilityJ(target[2], iwd[i].current, j, soil) #one extra parameter going which is not passed in the function (graph)
-                            # add newly visited node j to visited
-                            target[2].append(j)
-			    for ind in iwd[i]:
-				if ind is list:
-					ind=target[2]
-					
-				
-                            node_selected = True
+                        probability[j] = probabilityJ(target[2], iwd[i].current, j, soil) #one extra parameter going which is not passed in the function (graph)
+                        # add newly visited node j to visited
+                        target[2].append(j)
+                    for ind in iwd[i]:
+				        if ind is list:
+					        ind=target[2]
+			                node_selected = True
                 random_number=random.random()
                 probability_sum
             for k in probability:           #this for loop should be inside the while loop, no?
@@ -204,7 +202,9 @@ def IWD(graph):
                     temp[0] =  temp[0] + ds            
 		    iwd[i]=temp
             quality.append(iwd[temp].visited, graph)    #ye check karlena please 
-        
+    #6  
+    best_qual = max(quality)
+
     
  					
     
