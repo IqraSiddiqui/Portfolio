@@ -177,36 +177,35 @@ def IWD(graph):
                             node_selected = True
                 random_number=random.random()
                 probability_sum
-		for k in probability:
-    			if probability_sum > 1:
-                            node_selected = False
-                            break
-			if random_number > probability_sum and random_number < probability_sum+probability[k]: 
-                            j = k
-                            node_selected = True
-                            break
-			probability_sum = probability_sum + probability[k] 
-                    
-                if node_selected == True:
-                    # 5.2
-		    temp=iwd[i]
+            for k in probability:           #this for loop should be inside the while loop, no?
+                if probability_sum > 1:
+                    node_selected = False
+                    break
+                if random_number > probability_sum and random_number < probability_sum+probability[k]: 
+                    j = k
+                    node_selected = True
+                    break
+                probability_sum = probability_sum + probability[k] 
+                        
+            if node_selected == True:
+                # 5.2
+		        temp=iwd[i]
 		    for ind in range(len(iwd[i])):
 				if ind==2:
 					temp[2]=target[2]
 				elif ind==1:
-					 u_v = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][i] ** 2)   #u_v = updated velocity 
-                    			 temp[1]=u_v
+					u_v = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][i] ** 2)   #u_v = updated velocity 
+                    temp[1]=u_v
 				else:
-					 # 5.3 
-                    			ds = asoil/(boil + c_soil * time(i,j,u_v,HUD) ** 2)         #ds = delta soil 
-                   			 # 5.4
-                    			soil[iwd[i].current][i] = (1 - pn) * soil[iwd[i].current][i] - pn * ds
-                    			temp[0] =  temp[0] + ds            
+					# 5.3 
+                    ds = asoil/(boil + c_soil * time(i,j,u_v,HUD) ** 2)         #ds = delta soil 
+                   	# 5.4
+                    soil[iwd[i].current][i] = (1 - pn) * soil[iwd[i].current][i] - pn * ds
+                    temp[0] =  temp[0] + ds            
 		    iwd[i]=temp
-					
-                   
-                   
-
-
-
+            quality.append(iwd[temp].visited, graph)    #ye check karlena please 
+        
+    
+ 					
+    
           
