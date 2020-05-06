@@ -87,7 +87,14 @@ def HUD(distance):
 def time(i,j,vel,HUD):
     	return HUD[i][j]/vel 
 
-
+def q(visited,soil):
+    total=0
+    pre=visited[len(visited)-1]
+    for node in visited:
+        now=node
+        total=total+soil[pre][now]
+        pre=now
+    return(1/total)    
 
 
 
@@ -143,9 +150,9 @@ def IWD(graph):
     itercount=0             #iteration count is set to zero
     itermax=1000
 
-    amount_of_soil
-    
-   for iwd in range(len(graph)):
+    highest=0
+
+    for iwd in range(len(graph)):
         soil[iwd]={}
         for j in graph[iwd]:
             soil[iwd][j]=iniSoil
@@ -162,7 +169,7 @@ def IWD(graph):
 	    target=iwd[i]
             while len(target[2]) < Niwd:
                 node_selected = False   
-                # 5.1 
+                # Step 5.1 
 		
                 for j in graph[iwd[i].current]:
     				if j not in target[2]:
@@ -174,36 +181,79 @@ def IWD(graph):
 					        ind=target[2]
 			                node_selected = True
                 random_number=random.random()
-                probability_sum
-            for k in probability:           #this for loop should be inside the while loop, no?
-                if probability_sum > 1:
-                    node_selected = False
-                    break
-                if random_number > probability_sum and random_number < probability_sum+probability[k]: 
-                    j = k
-                    node_selected = True
-                    break
-                probability_sum = probability_sum + probability[k] 
+                probability_sum=0
+                for k in probability:           #this for loop should be inside the while loop, no?
+                    if probability_sum > 1:
+                        node_selected = False
+                        break
+                    if random_number > probability_sum and random_number < probability_sum+probability[k]: 
+                        j = k
+                        node_selected = True
+                        break
+                    probability_sum = probability_sum + probability[k] 
                         
-            if node_selected == True:
-                # 5.2
-		        temp=iwd[i]
-		    for ind in range(len(iwd[i])):
-				if ind==2:
-					temp[2]=target[2]
-				elif ind==1:
-					u_v = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][i] ** 2)   #u_v = updated velocity 
-                    temp[1]=u_v
-				else:
-					# 5.3 
-                    ds = asoil/(boil + c_soil * time(i,j,u_v,HUD) ** 2)         #ds = delta soil 
-                   	# 5.4
-                    soil[iwd[i].current][i] = (1 - pn) * soil[iwd[i].current][i] - pn * ds
-                    temp[0] =  temp[0] + ds            
-		    iwd[i]=temp
-            quality.append(iwd[temp].visited, graph)    #ye check karlena please 
-    #6  
-    best_qual = max(quality)
+                if node_selected == True:
+                     # Step 5.2 
+                        temp=iwd[i]
+                        for ind in range(len(iwd[i])):
+                                if ind==2:
+                                        temp[2]=target[2]
+                                elif ind==1:
+                                        u_v = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][i] ** 2)   #u_v = updated velocity 
+                                        temp[1]=u_v
+                                else:
+                                        # Step 5.3 
+                                        ds = asoil/(boil + c_soil * time(i,j,u_v,HUD) ** 2)         #ds = delta soil 
+                                        # Step 5.4 
+                                        soil[iwd[i].current][i] = (1 - pn) * soil[iwd[i].current][i] - pn * ds
+                                        temp[0] =  temp[0] + ds            
+                        iwd[i]=temp
+                        
+
+            temp=iwd[i]s
+            for ind in range(len(iwd[i])):
+                    if ind==2:
+                            temp[2]=target[2]
+                    elif ind==1:
+                            u_v = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][i] ** 2)   #u_v = updated velocity 
+                            temp[1]=u_v
+                    else:
+                            
+                            ds = asoil/(boil + c_soil * time(i,j,u_v,HUD) ** 2)         #ds = delta soil 
+                            soil[iwd[i].current][i] = (1 - pn) * soil[iwd[i].current][i] - pn * ds
+                            temp[0] =  temp[0] + ds            
+            iwd[i]=temp
+            quality.append(q(temp[2],soil))
+            
+    # Step 6  
+        best_qual = max(quality)
+        location=quality.index(best_qual)
+    # Step 7
+        target=iwd[location]
+        visit=target[2]
+        i=visit[len(visit)-1]
+        for j in visit:
+            soil[i][j]=(1+piwd)*soil[i][j]-piwd*(1/(Niwd-1))*target[0]
+            i=j
+    # Step 8
+        if highest>best_qual:
+            pass
+        else:
+            Ttb=visit
+            highest=best_qual
+    # Step 9
+        itercount=itercount+1
+
+    result=[Ttb,highest]
+    #Step 10
+    return(result)
+
+            #---------------------The End Of Algorithm--------------------------------#
+            
+        
+        
+        
+    
 
     
  					
