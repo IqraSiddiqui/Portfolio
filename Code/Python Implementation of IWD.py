@@ -170,42 +170,41 @@ def IWD(graph):
             while len(target[2]) < Niwd:
                 node_selected = False   
                 # Step 5.1 
-		
-                for j in graph[iwd[i].current]:
-    				if j not in target[2]:
-                        probability[j] = probabilityJ(target[2], iwd[i].current, j, soil) #one extra parameter going which is not passed in the function (graph)
+		lst=list(graph.keys())
+                for j in lst[i]:
+                    if j not in target[2]:
+                        probability[j] = probabilityJ(target[2], iwd[i].current, j, soil) 
                         # add newly visited node j to visited
                         target[2].append(j)
-                    for ind in iwd[i]:
-				        if ind is list:
-					        ind=target[2]
-			                node_selected = True
+                        iwd[i]=target
+                        
+                    
                 random_number=random.random()
                 probability_sum=0
-                for k in probability:           #this for loop should be inside the while loop, no?
+                for k in probability:       #this loop is verifying that the selected node j satisfy all constraints of the problem. It varies from problem to problem. Here we have taken a dummy constraint.   
                     if probability_sum > 1:
-                        node_selected = False
+                        node_selected = Wrong
                         break
                     if random_number > probability_sum and random_number < probability_sum+probability[k]: 
-                        j = k
-                        node_selected = True
+                        node_selected = Right
+                        j=k
                         break
                     probability_sum = probability_sum + probability[k] 
                         
-                if node_selected == True:
+                if node_selected == Right:
                      # Step 5.2 
                         temp=iwd[i]
                         for ind in range(len(iwd[i])):
                                 if ind==2:
                                         temp[2]=target[2]
                                 elif ind==1:
-                                        u_v = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][i] ** 2)   #u_v = updated velocity 
+                                        u_v = temp[1] + av / (bv + cv * soil[i][j] ** 2)   #u_v = updated velocity 
                                         temp[1]=u_v
                                 else:
                                         # Step 5.3 
                                         ds = asoil/(boil + c_soil * time(i,j,u_v,HUD) ** 2)         #ds = delta soil 
                                         # Step 5.4 
-                                        soil[iwd[i].current][i] = (1 - pn) * soil[iwd[i].current][i] - pn * ds
+                                        soil[i][j] = (1 - pn) * soil[i][j] - pn * ds
                                         temp[0] =  temp[0] + ds            
                         iwd[i]=temp
                         
