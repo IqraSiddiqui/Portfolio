@@ -1,3 +1,4 @@
+
 #------------IMPLEMENTATION OF INTELLIGENT WATER DROP ALGORITHM---------------------#
 
 #Reference:  https://pdfs.semanticscholar.org/9d61/b5d40f561a08657e75350c58a0e842be00c7.pdf
@@ -8,7 +9,7 @@ E= [(4,5),(5,7),(7,6),(5,4)]#set of edges from user
 import random
 #----------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------
-#helper functions:
+#helper functions to make an adjency list representaion of the given nodes and edges of graph:
 def addNodes(G, nodes):
     for i in nodes:
         G[i]=[]
@@ -38,23 +39,22 @@ def adjlist(V,E):
     addEdges(G,E,False)
     return(G)
 #---------------------------------------------------------------------------------        
-#---------------------------------------------------------------------------------
-
+#helper functions for IWD:
 def initializeIWD(Niwd,iniVel,iniSoil):
-    iwd={} #it will hold key as the iwd and its value as a list in the form [soil,velocity,visited]
+    soiliwd={}
+    visitiwd={}
+    veliwd={}
+    lst=list(graph.keys())
     for i in range(Niwd):
-            
-            val=[]
-            val.append(0)
-            val.append(iniVel)          # velocity is set to Initial Velocity. All IWDs are set to have zero amount of soil. 
+            soiliwd[i]=iniSoil      #All IWDs are set to have Initial Soil which is 0. 
+            veliwd[i]=iniVel    # velocity is set to Initial Velocity.          
 
             visited=[]
-            visit=random.choice(list(graph.keys())) #Step 3  (Spread the IWDs randomly on the nodes of the graph as their first visited nodes)
-            visited.append(visit) #Step 4   (Update the visited node list of each IWD to include the nodes just visited)
-            val.append(visited)
-
-            iwd[i]=val
-    return(iwd)
+            visit=lst[i] #Step 3  (Spread the IWDs randomly on the nodes of the graph as their first visited nodes)
+            visited.append(visit)
+            visitiwd[i]=visited #Step 4   (Update the visited node list of each IWD to include the nodes just visited)
+    
+    return(soiliwd,visitiwd,veliwd)
     
 
             
@@ -98,9 +98,8 @@ def q(visited,soil):
     return(1/total)    
 
 
-
+#---------------------------------------------------------------------------------------------------- 
 #----------------------------------------------------------------------------------------------------    
-    
 
 
 graph=adjlist(N,E) #unweighted, undirected
@@ -108,22 +107,23 @@ def IWD(graph):
     soil={} #soil on path from some node to another
     
     #Step 1
-    Ttb= -999         #total best solution set to worst value
+    #Ttb= -999         total best solution set to worst value
     Niwd=len(graph)                                 #number of water drops
     
-    av=1                #velocity parameters a, b, c
-    bv=0.01
-    cv=1
+##    av=1                #velocity parameters a, b, c
+##    bv=0.01
+##    cv=1
     
-    asoil=1             #soil parameters a, b, c
-    bsoil=0.01
-    csoil=1
+##    asoil=1             #soil parameters a, b, c
+##    bsoil=0.01
+##    csoil=1
     
-    pn=0.9          #local soil parameter is set to less than 1
-    piwd=0.9            #global soil parameter
+##    pn=0.9          #local soil parameter is set to less than 1
+##    piwd=0.9            #global soil parameter
     
     iniSoil=10000       #initial soil
-    iniVel=200      #intial velocity 
+    iniVel=200      #intial velocity
+
 
     itercount=0             #iteration count is set to zero
     itermax=3
@@ -133,72 +133,65 @@ def IWD(graph):
     lst=list(graph.keys())
     for node in (graph):
         soil[node]={}
-        for j in graph[node]:
-            soil[node][j]=iniSoil
-        target=soil[node]
         for neighbour in graph:
-            if neighbour not in target:
+            if neighbour in graph[node]:
+                soil[node][neighbour]=iniSoil
+            else:
                 soil[node][neighbour]=0
 
-
     while itercount<itermax:
-        iwd=initializeIWD(Niwd,iniVel,iniSoil) #Step 2
+        soiliwd,visitiwd,veliwd=initializeIWD(Niwd,iniVel,iniSoil) #Step 2
+       
         quality = []
         probability = {}
+        
         for i in range(Niwd):
-            target=iwd[i]
-            while len(target[2]) < Niwd:
-                node_j = False
-                # Step 5.1 
-                node=lst[i]
-                for j in graph[node]:
-                    if j not in target[2]:
-                        probability[j] = probabilityJ(target[2], lst[i], j, soil) 
-                        # add newly visited node j to visited
-                        target[2].append(j)
-                        iwd[i]=target
-                        
+           
+
+            node_j = False
+            # Step 5.1 
+            node=lst[i]
+            for j in graph[node]:
+                if j not in visitiwd[i]:
+                    probability[j] = int(probabilityJ(visitiwd[i], lst[i], j, soil))
                     
-                random_number=random.random()
-                probability_sum=0
-                for k in probability:       #this loop is verifying that the selected node j satisfy all constraints of the problem. It varies from problem to problem. Here we have taken a dummy constraint.   
-                    if probability_sum > 1:
-                        node_j = False
-                        break
-                    if random_number > probability_sum and random_number < probability_sum+probability[k]: 
-                        node_j = True
-                        j=k
-                        break
-                    probability_sum = probability_sum + probability[k] 
-                        
-                if node_j == True:
-                     # Step 5.2 
-                        temp=iwd[i]
-                        for ind in range(len(iwd[i])):
-                                if ind==2:
-                                        temp[2]=target[2]
-                                elif ind==1:
-                                        u_v = temp[1] + av / (bv + cv * soil[lst[i]][j] ** 2)   #u_v = updated velocity 
-                                        temp[1]=u_v
-                                else:
-                                        # Step 5.3 
-                                        ds = asoil/(bsoil + csoil * time(i,j,temp[1],HUD(lst[i],j,soil)) ** 2)         #ds = delta soil 
-                                        # Step 5.4 
-                                        soil[lst[i]][j] = (1 - pn) * soil[lst[i]][j] - pn * ds
-                                        temp[0] =  temp[0] + ds            
-                        iwd[i]=temp
-                        
-            quality.append(q(temp[2],soil))
+                    temp=visitiwd[i]
+                    temp.append(j)
+                    visitiwd[i]=temp  # add newly visited node j to visited
+
+            random_number=random.random()
+            probability_sum=0
+            
+            for k in probability:       #this loop is verifying that the selected node j satisfy all constraints of the problem. It varies from problem to problem. Here we have taken a dummy constraint.   
+                if random_number > probability_sum and random_number < probability_sum+probability[k]: 
+                    node_j = True
+                    j=k
+                    break
+                else:
+                    node_j=False
+                probability_sum = probability_sum + probability[k]
+
+
+            # Step 5.2 
+            u_v = veliwd[i] + 1 / (0.01 + 1 * soil[lst[i]][j] ** 2)   #u_v = updated velocity 
+            veliwd[i]=u_v
+
+            # Step 5.3 
+            ds = 1/(0.01 + 1 * time(i,j,veliwd[i],HUD(lst[i],j,soil)) ** 2)         #ds = delta soil 
+            # Step 5.4 
+            soil[lst[i]][j] = (1 - 0.9) * soil[lst[i]][j] - 0.9 * ds
+            soiliwd[i] =  soiliwd[i] + ds                 #updated soil                   
+            quality.append(q(visitiwd[i],soil))
+
             
     # Step 6  
         best_qual = max(quality)
         location=quality.index(best_qual)
     # Step 7
-        target=iwd[location]
-        visit=target[2]
+        visit=visitiwd[location]
         i=visit[len(visit)-1]
         for j in visit:
-            soil[i][j]=(1+piwd)*soil[i][j]-piwd*(1/(Niwd-1))*target[0]
+            soil[i][j]=(1+0.9)*soil[i][j]-0.9*(1/(Niwd-1))*soiliwd[location]
             i=j
     # Step 8
         if highest>best_qual:
@@ -210,7 +203,7 @@ def IWD(graph):
         itercount=itercount+1
 
     result=[Ttb,highest]
-    print(result)
+
     #Step 10
     return(result)
 
@@ -218,3 +211,10 @@ def IWD(graph):
             
         
 print(IWD(graph))        
+        
+    
+
+    
+ 					
+    
+          
