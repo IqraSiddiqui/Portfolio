@@ -2,8 +2,8 @@
 
 #Reference:  https://pdfs.semanticscholar.org/9d61/b5d40f561a08657e75350c58a0e842be00c7.pdf
 
-N= #set of nodes from user
-E= #set of edges from user
+N= [4,5,6,7]#set of nodes from user
+E= [(4,5),(5,7),(7,6),(5,4)]#set of edges from user
 
 import random
 #----------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ def adjlist(V,E):
 #---------------------------------------------------------------------------------        
 #---------------------------------------------------------------------------------
 
-def initializeIWD(Niwd):
+def initializeIWD(Niwd,iniVel,iniSoil):
     iwd={} #it will hold key as the iwd and its value as a list in the form [soil,velocity,visited]
     for i in range(Niwd):
             
@@ -49,7 +49,7 @@ def initializeIWD(Niwd):
             val.append(iniVel)          # velocity is set to Initial Velocity. All IWDs are set to have zero amount of soil. 
 
             visited=[]
-            visit=random.choice(graph.keys()) #Step 3  (Spread the IWDs randomly on the nodes of the graph as their first visited nodes)
+            visit=random.choice(list(graph.keys())) #Step 3  (Spread the IWDs randomly on the nodes of the graph as their first visited nodes)
             visited.append(visit) #Step 4   (Update the visited node list of each IWD to include the nodes just visited)
             val.append(visited)
 
@@ -57,18 +57,11 @@ def initializeIWD(Niwd):
     return(iwd)
     
 
-def probabilityJ(i,j,temp[i],soil):
-    sigma_i_k=0
-    for k in graph:
-        if k not in temp[i]:
-            sigma_i_k = sigma_i_k + f_soil(i,k,temp[i],soil)
-    return(f_soil(i,j,temp[i],soil)/sigma_i_k)
             
-            
-def g_soil(i,j,temp[i],soil):
+def g_soil(i,j,visited,soil):
     mini=1000000000000000000000000000000
     for l in graph:
-        if l not in temp[i]:
+        if l not in visited:
             if soil[i][l]<mini:
                 mini=soil[i][l]
     if mini>=0:
@@ -76,16 +69,24 @@ def g_soil(i,j,temp[i],soil):
     else:
         return(soil[i][l]-mini)
     
-def f_soil(i,j,temp[i],soil):
+def f_soil(i,j,visited,soil):
     epsilon_s= 0.0001
-    return(1/(epsilon_s+g_soil(i,j,temp[i],soil)))
+    return(1/(epsilon_s+g_soil(i,j,visited,soil)))
 
-def HUD(distance):
-    HUD = distance
-    return distance   #not storing it yet...
+def probabilityJ(visited,i,j,soil):
+    sigma_i_k=0
+    for k in graph:
+        if k not in visited:
+            sigma_i_k = sigma_i_k + f_soil(i,k,visited,soil)
+    return(f_soil(i,j,visited,soil)/sigma_i_k)
+    
+
+def HUD(i,node_j,soil):
+    HUD = soil[i][node_j]  #more the soil on a path, greater is the heuristic undersirability i.e. HUD. HUD varies from problem to problem. For example in solving TSP the HUD can be taken as distance. 
+    return HUD   
 
 def time(i,j,vel,HUD):
-    	return HUD[i][j]/vel 
+    	return HUD/vel 
 
 def q(visited,soil):
     total=0
@@ -102,35 +103,12 @@ def q(visited,soil):
     
 
 
-graph=adjlist(N,E) 
+graph=adjlist(N,E) #unweighted, undirected
 def IWD(graph):
     soil={} #soil on path from some node to another
-    """Initialisation of static parameters. The graph (N, E) of
-    the problem is given to the algorithm. The quality of the
-    total-best solution TTB is initially set to the worst value:
-    ( ) TB q T = −∞ . The maximum number of iterations
-    itermax is specified by the user. The iteration count
-    itercount is set to zero.
-    The number of water drops NIWD is set to a positive
-    integer value, which is usually set to the number of
-    nodes Nc of the graph.
-    For velocity updating, the parameters are 1 v a = ,
-    .01 v b = and 1 v c = . For soil updating, 1 s a = , .01 s b =
-    and 1 s c = . The local soil updating parameter ρn ,
-    which is a small positive number less than one, is set as 
-    ρn = . The global soil updating parameter ρ IWD ,
-    which is chosen from [0, 1], is set as 0.9 ρ IWD = .
-    Moreover, the initial soil on each path (edge) is denoted
-    by the constant InitSoil such that the soil of the path
-    between every two nodes i and j is set by
-    soil i j InitSoil (, ) = . The initial velocity of each IWD is
-    set to InitVel. Both parameters InitSoil and InitVel are
-    user selected and they should be tuned experimentally
-    for the application. Here, InitSoil = 10000 and
-    InitVel = 200. For the IWD-MKP, InitVel = 4 is used,
-    which is the same value used in Shah-Hosseini (2008)"""
+    
     #Step 1
-    Ttb= -1000000000000000000000000000000           #total best solution set to worst value
+    Ttb= -999         #total best solution set to worst value
     Niwd=len(graph)                                 #number of water drops
     
     av=1                #velocity parameters a, b, c
@@ -148,32 +126,34 @@ def IWD(graph):
     iniVel=200      #intial velocity 
 
     itercount=0             #iteration count is set to zero
-    itermax=1000
+    itermax=3
 
     highest=0
 
-    for iwd in range(len(graph)):
-        soil[iwd]={}
-        for j in graph[iwd]:
-            soil[iwd][j]=iniSoil
+    lst=list(graph.keys())
+    for node in (graph):
+        soil[node]={}
+        for j in graph[node]:
+            soil[node][j]=iniSoil
+        target=soil[node]
+        for neighbour in graph:
+            if neighbour not in target:
+                soil[node][neighbour]=0
+
 
     while itercount<itermax:
-        """Initialisation of dynamic parameters. Every IWD has a
-        visited node list ( ) V IWD c , which is initially empty:
-        V IWD c ( ) = { } . Each IWD’s velocity is set to InitVel.
-        All IWDs are set to have zero amount of soil."""
-        iwd=initializeIWD(Niwd) #Step 2
+        iwd=initializeIWD(Niwd,iniVel,iniSoil) #Step 2
         quality = []
         probability = {}
         for i in range(Niwd):
-	    target=iwd[i]
+            target=iwd[i]
             while len(target[2]) < Niwd:
-                node_selected = False   
+                node_j = False
                 # Step 5.1 
-		lst=list(graph.keys())
-                for j in lst[i]:
+                node=lst[i]
+                for j in graph[node]:
                     if j not in target[2]:
-                        probability[j] = probabilityJ(target[2], iwd[i].current, j, soil) 
+                        probability[j] = probabilityJ(target[2], lst[i], j, soil) 
                         # add newly visited node j to visited
                         target[2].append(j)
                         iwd[i]=target
@@ -183,45 +163,31 @@ def IWD(graph):
                 probability_sum=0
                 for k in probability:       #this loop is verifying that the selected node j satisfy all constraints of the problem. It varies from problem to problem. Here we have taken a dummy constraint.   
                     if probability_sum > 1:
-                        node_selected = Wrong
+                        node_j = False
                         break
                     if random_number > probability_sum and random_number < probability_sum+probability[k]: 
-                        node_selected = Right
+                        node_j = True
                         j=k
                         break
                     probability_sum = probability_sum + probability[k] 
                         
-                if node_selected == Right:
+                if node_j == True:
                      # Step 5.2 
                         temp=iwd[i]
                         for ind in range(len(iwd[i])):
                                 if ind==2:
                                         temp[2]=target[2]
                                 elif ind==1:
-                                        u_v = temp[1] + av / (bv + cv * soil[i][j] ** 2)   #u_v = updated velocity 
+                                        u_v = temp[1] + av / (bv + cv * soil[lst[i]][j] ** 2)   #u_v = updated velocity 
                                         temp[1]=u_v
                                 else:
                                         # Step 5.3 
-                                        ds = asoil/(boil + c_soil * time(i,j,u_v,HUD) ** 2)         #ds = delta soil 
+                                        ds = asoil/(bsoil + csoil * time(i,j,temp[1],HUD(lst[i],j,soil)) ** 2)         #ds = delta soil 
                                         # Step 5.4 
-                                        soil[i][j] = (1 - pn) * soil[i][j] - pn * ds
+                                        soil[lst[i]][j] = (1 - pn) * soil[lst[i]][j] - pn * ds
                                         temp[0] =  temp[0] + ds            
                         iwd[i]=temp
                         
-
-            temp=iwd[i]s
-            for ind in range(len(iwd[i])):
-                    if ind==2:
-                            temp[2]=target[2]
-                    elif ind==1:
-                            u_v = iwd[i].velocity + av / (bv + cv * soil[iwd[i].current][i] ** 2)   #u_v = updated velocity 
-                            temp[1]=u_v
-                    else:
-                            
-                            ds = asoil/(boil + c_soil * time(i,j,u_v,HUD) ** 2)         #ds = delta soil 
-                            soil[iwd[i].current][i] = (1 - pn) * soil[iwd[i].current][i] - pn * ds
-                            temp[0] =  temp[0] + ds            
-            iwd[i]=temp
             quality.append(q(temp[2],soil))
             
     # Step 6  
@@ -244,17 +210,11 @@ def IWD(graph):
         itercount=itercount+1
 
     result=[Ttb,highest]
+    print(result)
     #Step 10
     return(result)
 
             #---------------------The End Of Algorithm--------------------------------#
             
         
-        
-        
-    
-
-    
- 					
-    
-          
+print(IWD(graph))        
