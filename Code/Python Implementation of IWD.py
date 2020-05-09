@@ -100,6 +100,9 @@ def q(visited,soil): #this function evaluates the quality of an iterative soluti
 #---------------------------------------------------------------------------------------------------- 
 #----------------------------------------------------------------------------------------------------    
 
+#------------------------------------------------------------------------------
+#    IMPLEMENTATION WITH INPUT AS UN-WEIGHTED graph
+#------------------------------------------------------------------------------
 
 graph=adjlist(N,E) #unweighted, undirected, adjency list representation of graph
 def IWD(graph):
@@ -207,7 +210,15 @@ def IWD(graph):
             #---------------------The End Of Algorithm--------------------------------#
             
         
-print(IWD(graph))        
+#print(iwd(graph))
+
+#------------------------------------------------------------------------------
+#    IMPLEMENTATION WITH INPUT AS WEIGHTED graph
+#------------------------------------------------------------------------------
+graph={'A':[('B',5),('C',2)],'B':[('C',6),('A',5)],'C':[('A',2),('B',6)]} #undirected
+
+def iwd_weighted(graph):
+    
         
     
 
