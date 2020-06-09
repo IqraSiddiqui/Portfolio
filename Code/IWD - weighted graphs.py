@@ -124,7 +124,7 @@ def iwd_weighted(graph):
     return(result)
 
             #---------------------The End Of Algorithm--------------------------------#
-#print(iwd_weighted(graph))
+print(iwd_weighted(graph))
  					
     
           
