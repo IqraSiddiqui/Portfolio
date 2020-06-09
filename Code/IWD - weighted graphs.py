@@ -1,3 +1,94 @@
+N= [4,5,6,7]#set of nodes from user
+E= [(4,5),(5,7),(7,6),(5,4)]#set of edges from user
+
+import random
+#----------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------
+
+def addNodes(G, nodes):
+    for i in nodes:
+        G[i]=[]
+    return(G)
+def addEdges(G, edges, directed):
+    if directed==False:
+        for i in G:
+            ans=[]
+
+            for j in edges:
+                if j[0]==i:
+                    ans.append(j[1])
+                elif j[1]==i:
+                    ans.append(j[0])
+            G[i]=ans
+    else:
+        for i in G:
+            ans=[]
+            for j in edges:
+                if j[0]==i:
+                    ans.append(j[1])
+            G[i]=ans
+    return(G)
+
+def adjlist(V,E):
+    G={}
+    addNodes(G, V)
+    addEdges(G,E,False)
+    return(G)
+#---------------------------------------------------------------------------------        
+#helper functions for IWD:
+def initializeIWD(Niwd,iniVel,iniSoil):
+    soiliwd={}
+    visitiwd={}
+    veliwd={}
+    lst=list(graph.keys())
+    for i in range(Niwd):
+            soiliwd[i]=iniSoil      #All IWDs are set to have Initial Soil which is 0. 
+            veliwd[i]=iniVel    # velocity is set to Initial Velocity.          
+
+            visited=[]
+            visit=lst[i] #Step 3  (Spread the IWDs randomly on the nodes of the graph as their first visited nodes)
+            visited.append(visit)
+            visitiwd[i]=visited #Step 4   (Update the visited node list of each IWD to include the nodes just visited)
+    
+    return(soiliwd,visitiwd,veliwd)
+            
+def g_soil(i,j,visited,soil):
+    mini=1000000000000000000000000000000
+    for l in graph:
+        if l not in visited:
+            if soil[i][l]<mini:
+                mini=soil[i][l]
+    if mini>=0:
+        return(soil[i][l])
+    else:
+        return(soil[i][l]-mini)
+    
+def f_soil(i,j,visited,soil):
+    epsilon_s= 0.0001
+    return(1/(epsilon_s+g_soil(i,j,visited,soil)))
+
+def probabilityJ(visited,i,j,soil):
+    sigma_i_k=0
+    for k in graph:
+        if k not in visited:
+            sigma_i_k = sigma_i_k + f_soil(i,k,visited,soil)
+    return(f_soil(i,j,visited,soil)/sigma_i_k)
+    
+def time(i,j,vel,HUD):
+    	return HUD/vel 
+
+def q(visited,soil):
+    total=0
+    pre=visited[len(visited)-1]
+    for node in visited:
+        now=node
+        total=total+soil[pre][now]
+        pre=now
+    return(1/total)    
+
+
+#---------------------------------------------------------------------------------------------------- 
+#-------------------------------------------------------------
 #------------------------------------------------------------------------------
 #    IMPLEMENTATION WITH INPUT AS WEIGHTED graph
 #------------------------------------------------------------------------------
