@@ -1,40 +1,10 @@
-N= [4,5,6,7]#set of nodes from user
-E= [(4,5),(5,7),(7,6),(5,4)]#set of edges from user
+
 
 import random
 #----------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------
 
-def addNodes(G, nodes):
-    for i in nodes:
-        G[i]=[]
-    return(G)
-def addEdges(G, edges, directed):
-    if directed==False:
-        for i in G:
-            ans=[]
-
-            for j in edges:
-                if j[0]==i:
-                    ans.append(j[1])
-                elif j[1]==i:
-                    ans.append(j[0])
-            G[i]=ans
-    else:
-        for i in G:
-            ans=[]
-            for j in edges:
-                if j[0]==i:
-                    ans.append(j[1])
-            G[i]=ans
-    return(G)
-
-def adjlist(V,E):
-    G={}
-    addNodes(G, V)
-    addEdges(G,E,False)
-    return(G)
-#---------------------------------------------------------------------------------        
+     
 #helper functions for IWD:
 def initializeIWD(Niwd,iniVel,iniSoil):
     soiliwd={}
@@ -215,7 +185,9 @@ def iwd_weighted(graph):
     return(result)
 
             #---------------------The End Of Algorithm--------------------------------#
-print(iwd_weighted(graph))
+##graph={'A':[('B',5),("C",2)],'B':[('C',6),('A',5)],'C':[('A',2),('B',6)]} #undirected #weighted
+##print(iwd_weighted(graph))
+
  					
     
           
