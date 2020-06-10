@@ -3,8 +3,6 @@
 
 #Reference:  https://pdfs.semanticscholar.org/9d61/b5d40f561a08657e75350c58a0e842be00c7.pdf
 
-N= [4,5,6,7]#set of nodes from user
-E= [(4,5),(5,7),(7,6),(5,4)]#set of edges from user
 
 import random
 #----------------------------------------------------------------------------------
@@ -212,7 +210,12 @@ def iwd(graph):
             #---------------------The End Of Algorithm--------------------------------#
             
         
+##            
+##N= [4,5,6,7]#set of nodes from user
+##E= [(4,5),(5,7),(7,6),(5,4)]#set of edges from user
+##graph=adjlist(N,E) #unweighted
 #print(iwd(graph))
+
 
 #------------------------------------------------------------------------------
 #    IMPLEMENTATION with input as WEIGHTED graph
@@ -224,7 +227,6 @@ def HUD_weight(i,node_j,weight):
 #----------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------
 
-graph={'A':[('B',5),("C",2)],'B':[('C',6),('A',5)],'C':[('A',2),('B',6)]} #undirected
 
 def iwd_weighted(graph):
     soil={} #soil on path from some node to another
@@ -268,7 +270,7 @@ def iwd_weighted(graph):
                 weight[node][neighbour]=0
             if neighbour not in soil[node]:
                 soil[node][neighbour]=0
-    print(soil)
+    
                 
     while itercount<itermax:
         soiliwd,visitiwd,veliwd=initializeIWD(Niwd,iniVel,iniSoil) #Step 2
@@ -341,7 +343,9 @@ def iwd_weighted(graph):
 
             #---------------------The End Of Algorithm--------------------------------#
 
-#print(iwd_weighted(graph))
+##graph={'A':[('B',5),("C",2)],'B':[('C',6),('A',5)],'C':[('A',2),('B',6)]} #undirected
+##print(iwd_weighted(graph))
+
 
  
 
