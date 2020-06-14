@@ -181,7 +181,8 @@ def iwd(graph):
             # Step 5.4 
             soil[lst[i]][j] = (1 - 0.9) * soil[lst[i]][j] - 0.9 * ds
             soiliwd[i] =  soiliwd[i] + ds                 #updated soil                   
-            quality.append(q(visitiwd[i],soil))
+            quality.append(q(visitiwd[i],soil))   #evaluating quality by q and storing it. q takes two parameters whch includes the iteration path and the soil.
+
 
             
     # Step 6  
@@ -315,7 +316,7 @@ def iwd_weighted(graph):
             # Step 5.4 
             soil[lst[i]][j] = (1 - 0.9) * soil[lst[i]][j] - 0.9 * ds
             soiliwd[i] =  soiliwd[i] + ds                 #updated soil                   
-            quality.append(q(visitiwd[i],soil))        #evaluating quality by q and storing it.
+            quality.append(q(visitiwd[i],weight))        #evaluating quality by q and storing it. q takes two parameters whch includes the iteration path and the edges weight.
 
             
     # Step 6  
