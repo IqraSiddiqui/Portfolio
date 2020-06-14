@@ -101,7 +101,7 @@ def q(visited,soil):# --------------------------------------------------! O (len
 
 graph=adjlist(N,E) #unweighted, undirected---------------------------------------------------------------O(VE) + O(V)
 def iwd(graph):
-    soil={} #soil on path from some node to another
+    soil={} #soil on path from some node to another 
     #Step 1# -------------------------------------------------------------------------------------------------O (V)
     #Ttb= -999         total best solution set to worst value
     Niwd=len(graph)                                 #number of water drops
@@ -129,23 +129,23 @@ def iwd(graph):
     for node in (graph): # ! O(V)
         soil[node]={}
         for neighbour in graph:  # ! O(V)
-            if neighbour in graph[node]: # ! O(len(graph[Node]))
+            if neighbour in graph[node]: # ! O(len(graph[Node]))-----complexity of in operator is the number of elements in the list
                 soil[node][neighbour]=iniSoil
             else:
                 soil[node][neighbour]=0
     
     # ! O(Niwd * VE)
-    while itercount<itermax: # ! Loop thousand times
-        soiliwd,visitiwd,veliwd=initializeIWD(Niwd,iniVel,iniSoil) #Step 2--------------------------------------------O(Niwd)*O(itermax)
+    while itercount<itermax: 
+        soiliwd,visitiwd,veliwd=initializeIWD(Niwd,iniVel,iniSoil) #Step 2--------------------------------------------O(Niwd)*O(itermax)-----Complexity of initializeIWD() * O(itermax)
         quality = []
         probability = {}
 
         
         for i in range(Niwd): # ! O(Niwd)
             node_j = False
-            # Step 5.1-----------------------------------------------------------------------------------------------------------------------O(E)*O(Niwd)*O(itermax)
+            # Step 5.1-----------------------------------------------------------------------------------------------------------------------O (len(visited) * V)*O(E)*O(Niwd)*O(itermax)
             node=lst[i]
-            # ! O(VE)*O(Niwd)*O(itermax) I think
+            
             for j in graph[node]: # ! O(E)*O(Niwd)*O(itermax)
                 if j not in visitiwd[i]:
                     probability[j] = int(probabilityJ(visitiwd[i], lst[i], j, soil)) # !  O (len(visited) * V)*O(E)*O(Niwd)*O(itermax)
@@ -166,7 +166,7 @@ def iwd(graph):
                 probability_sum = probability_sum + probability[k]
 
             
-            # Step 5.2-------- ---------------------------------------------------------------------------------------------------------------O(len(visited))*O(Niwd)*O(itermax)
+            # Step 5.2-------- --------------------------------------------------------------------------------------------------------------O(Niwd)*O(itermax)
             u_v = veliwd[i] + 1 / (0.01 + 1 * soil[lst[i]][j] ** 2)   #u_v = updated velocity 
             veliwd[i]=u_v
 
