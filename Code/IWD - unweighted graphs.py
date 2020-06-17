@@ -1,5 +1,4 @@
-N= [4,5,6,7]#set of nodes from user
-E= [(4,5),(5,7),(7,6),(5,4)]#set of edges from user
+
 
 import random
 #----------------------------------------------------------------------------------
@@ -203,5 +202,17 @@ def IWD(graph):
 
             #---------------------The End Of Algorithm--------------------------------#
             
-        
-#print(iwd(graph))
+#----test input
+N=[]
+E=[]
+for i in range(3):
+    n=random.randint(10, 20)
+    for i in range(n):
+        N.append(i)
+        for j in range(n):
+            if i!=j:
+                E.append((i,j))
+    graph=adjlist(N,E)    
+    N=[]
+    E=[]
+    print(iwd(graph))
