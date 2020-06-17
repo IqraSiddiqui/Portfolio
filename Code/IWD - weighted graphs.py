@@ -185,7 +185,23 @@ def iwd_weighted(graph):
     return(result)
 
             #---------------------The End Of Algorithm--------------------------------#
-##graph={'A':[('B',5),("C",2)],'B':[('C',6),('A',5)],'C':[('A',2),('B',6)]} #undirected #weighted
+#####graph={'A':[('B',5),("C",2)],'B':[('C',6),('A',5)],'C':[('A',2),('B',6)]} #undirected #weighted
+
+#--test input
+#N=[]
+#E=[]
+#graph={}
+#import timeit
+#for i in range(3):
+ #   n=random.randint(10, 20)
+  #  for i in range(n):
+   #     graph[i]=[]
+    #    for j in range(n):
+     #       if i!=j:
+      #          E.append((j,random.random()))
+       # graph[i]=E
+        #E=[]
+
 ##print(iwd_weighted(graph))
 
  					
