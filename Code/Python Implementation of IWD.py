@@ -211,11 +211,33 @@ def iwd(graph):
             #---------------------The End Of Algorithm--------------------------------#
             
         
-##            
-##N= [4,5,6,7]#set of nodes from user
-##E= [(4,5),(5,7),(7,6),(5,4)]#set of edges from user
-##graph=adjlist(N,E) #unweighted
-#print(iwd(graph))
+#----test input
+
+N=[]
+
+E=[]
+
+#for i in range(3):
+
+    #n=random.randint(10, 20)
+
+    #for i in range(n):
+
+        #N.append(i)
+
+        #for j in range(n):
+
+            #if i!=j:
+
+                #E.append((i,j))
+
+    #graph=adjlist(N,E)    
+
+    #N=[]
+
+    #E=[]
+
+    #print(iwd(graph))
 
 
 #------------------------------------------------------------------------------
