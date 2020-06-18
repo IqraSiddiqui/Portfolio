@@ -98,12 +98,12 @@ def iwd_weighted(graph):
 
     highest=0       #highest quality is set to 0
 
-    lst=list(graph.keys())
-    for node in graph:
-        soil[node]={}
-        weight[node]={}
+    lst=list(graph.keys())      # O(V)
+    for node in graph:      # O(V)
+        soil[node]={}       
+        weight[node]={}     
         target=graph[node]
-        for pair in target:
+        for pair in target:     # O(V)
             weight[node][pair[0]]=pair[1]
             soil[node][pair[0]]=iniSoil
 
@@ -149,39 +149,39 @@ def iwd_weighted(graph):
                 probability_sum = probability_sum + probability[k]
 
 
-            # Step 5.2 
+            # Step 5.2      O(Niwd)*O(itermax)
             uv = veliwd[i] + 1 / (0.01 + 1 * soil[lst[i]][j] ** 2)   #uv = updated velocity 
             veliwd[i]=uv
 
-            # Step 5.3 
+            # Step 5.3      O(1)*O(Niwd)*O(itermax)
             ds = 1/(0.01 + 1 * time(i,j,veliwd[i],HUD(lst[i],j,soil)) ** 2)         #ds = delta soil 
-            # Step 5.4 
+            # Step 5.4      O(len(visited))*O(Niwd)*O(itermax)
             soil[lst[i]][j] = (1 - 0.9) * soil[lst[i]][j] - 0.9 * ds
             soiliwd[i] =  soiliwd[i] + ds                 #updated soil                   
             quality.append(q(visitiwd[i],soil))        #evaluating quality by q and storing it.
 
             
-    # Step 6  
+    # Step 6            O(len(quality))*O(itermax)
         best_qual = max(quality) #best quality of the iteartion is the maximum quality of that iteration
         location=quality.index(best_qual)
-    # Step 7
+    # Step 7            O(len(visit))*O(itermax)
         visit=visitiwd[location]
         i=visit[len(visit)-1]
         for j in visit:
             soil[i][j]=(1+0.9)*soil[i][j]-0.9*(1/(Niwd-1))*soiliwd[location]  #updating soil value of that iwd which is responsible for the best_qual
             i=j
-    # Step 8
+    # Step 8            O(1)*O(itermax)
         if highest>best_qual:
             pass
         else:
             Ttb=visit
             highest=best_qual
-    # Step 9
+    # Step 9            O(1)*O(itermax)
         itercount=itercount+1
 
     result=[Ttb,highest]
 
-    # Step 10
+    # Step 10           O(1)
     return(result)
 
             #---------------------The End Of Algorithm--------------------------------#
