@@ -71,7 +71,7 @@ def HUD_weight(i,node_j,weight):        # O(1)
 
 #graph={'A':[('B',5),('C',2)],'B':[('C',6),('A',5)],'C':[('A',2),('B',6)]} #undirected
 
-def iwd_weighted(graph):
+def iwd_weighted(graph): # O(Niwd * VE) * O(V) * O(V) * O(E)*O(Niwd)*O(itermax)      
     soil={} #soil on path from some node to another
     weight={}
     #Step 1
@@ -107,20 +107,20 @@ def iwd_weighted(graph):
             weight[node][pair[0]]=pair[1]
             soil[node][pair[0]]=iniSoil
 
-    for node in weight:
-        for neighbour in lst:
+    for node in weight:         #O(E)
+        for neighbour in lst:   #O(E)
             if neighbour not in weight[node]:
                 weight[node][neighbour]=0
             if neighbour not in soil[node]:
                 soil[node][neighbour]=0
 
-    while itercount<itermax:
-        soiliwd,visitiwd,veliwd=initializeIWD(Niwd,iniVel,iniSoil) #Step 2
+    while itercount<itermax: # ! O(Niwd * VE)
+        soiliwd,visitiwd,veliwd=initializeIWD(Niwd,iniVel,iniSoil) #Step 2    O(Niwd)*O(itermax)-----Complexity of initializeIWD() * O(itermax)
        
         quality = []
         probability = {}
-        
-        for i in range(Niwd):
+         
+        for i in range(Niwd):       # O(Niwd)
             node_j = False
             # Step 5.1 
             node=lst[i]
@@ -128,6 +128,8 @@ def iwd_weighted(graph):
             neighbour=[]
             for pair in target:
                 neighbour.append(pair[0])
+            
+            #O(V)
             for j in neighbour:
                 if j not in visitiwd[i]:
                     probability[j] = int(probabilityJ(visitiwd[i], lst[i], j, soil)) #deducing the probability of j and storing it as a value of key j 
@@ -138,8 +140,9 @@ def iwd_weighted(graph):
 
             random_number=random.random()
             probability_sum=0
-            
-            for k in probability:       #this loop is verifying that the selected node j satisfy all constraints of the problem. It varies from problem to problem. Here we have taken a dummy constraint which j should satisfy in order to be selected.   
+
+            # ! O(E)*O(Niwd)*O(itermax)
+            for k in probability: # O (P)      #this loop is verifying that the selected node j satisfy all constraints of the problem. It varies from problem to problem. Here we have taken a dummy constraint which j should satisfy in order to be selected.   
                 if random_number > probability_sum and random_number < probability_sum+probability[k]: 
                     node_j = True
                     j=k
@@ -185,7 +188,7 @@ def iwd_weighted(graph):
     return(result)
 
             #---------------------The End Of Algorithm--------------------------------#
-#####graph={'A':[('B',5),("C",2)],'B':[('C',6),('A',5)],'C':[('A',2),('B',6)]} #undirected #weighted
+#graph={'A':[('B',5),("C",2)],'B':[('C',6),('A',5)],'C':[('A',2),('B',6)]} #undirected #weighted
 
 #--test input
 #N=[]
@@ -193,16 +196,16 @@ def iwd_weighted(graph):
 #graph={}
 #import timeit
 #for i in range(3):
- #   n=random.randint(10, 20)
-  #  for i in range(n):
-   #     graph[i]=[]
-    #    for j in range(n):
-     #       if i!=j:
-      #          E.append((j,random.random()))
-       # graph[i]=E
-        #E=[]
+#    n=random.randint(10, 20)
+#    for i in range(n):
+#        graph[i]=[]
+#        for j in range(n):
+#           if i!=j:
+#              E.append((j,random.random()))
+#        graph[i]=E
+#        E=[]
 
-##print(iwd_weighted(graph))
+#print(iwd_weighted(graph))
 
  					
     
