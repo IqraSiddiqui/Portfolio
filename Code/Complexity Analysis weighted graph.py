@@ -107,8 +107,8 @@ def iwd_weighted(graph): # O(Niwd * VE) * O(V) * O(V) * O(E)*O(Niwd)*O(itermax)
             weight[node][pair[0]]=pair[1]
             soil[node][pair[0]]=iniSoil
 
-    for node in weight:         #O(E)
-        for neighbour in lst:   #O(E)
+    for node in weight:         #O(V)
+        for neighbour in lst:   #O(V)
             if neighbour not in weight[node]:
                 weight[node][neighbour]=0
             if neighbour not in soil[node]:
