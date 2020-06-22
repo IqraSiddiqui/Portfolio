@@ -215,4 +215,4 @@ for i in range(3):
     graph=adjlist(N,E)    
     N=[]
     E=[]
-    print(iwd(graph))
+    print(IWD(graph))
