@@ -200,6 +200,7 @@ graph={}
 for i in range(3):
 
     n=random.randint(10, 20)
+    graph={}
 
     for i in range(n):
 
