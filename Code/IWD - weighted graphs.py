@@ -154,7 +154,7 @@ def iwd_weighted(graph):
             veliwd[i]=uv
 
             # Step 5.3 
-            ds = 1/(0.01 + 1 * time(i,j,veliwd[i],HUD(lst[i],j,soil)) ** 2)         #ds = delta soil 
+            ds = 1/(0.01 + 1 * time(i,j,veliwd[i],HUD_weight(lst[i],j,soil)) ** 2)         #ds = delta soil 
             # Step 5.4 
             soil[lst[i]][j] = (1 - 0.9) * soil[lst[i]][j] - 0.9 * ds
             soiliwd[i] =  soiliwd[i] + ds                 #updated soil                   
@@ -188,21 +188,36 @@ def iwd_weighted(graph):
 #####graph={'A':[('B',5),("C",2)],'B':[('C',6),('A',5)],'C':[('A',2),('B',6)]} #undirected #weighted
 
 #--test input
-#N=[]
-#E=[]
-#graph={}
-#import timeit
-#for i in range(3):
- #   n=random.randint(10, 20)
-  #  for i in range(n):
-   #     graph[i]=[]
-    #    for j in range(n):
-     #       if i!=j:
-      #          E.append((j,random.random()))
-       # graph[i]=E
-        #E=[]
 
-##print(iwd_weighted(graph))
+N=[]
+
+E=[]
+
+graph={}
+
+
+
+for i in range(3):
+
+    n=random.randint(10, 20)
+
+    for i in range(n):
+
+        graph[i]=[]
+
+        for j in range(n):
+
+            if i!=j:
+
+              E.append((j,random.random()))
+
+        graph[i]=E
+
+        E=[]
+
+
+
+print(iwd_weighted(graph))
 
  					
     
