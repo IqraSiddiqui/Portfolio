@@ -207,6 +207,7 @@ N=[]
 E=[]
 for i in range(3):
     n=random.randint(10, 20)
+    graph={}
     for i in range(n):
         N.append(i)
         for j in range(n):
